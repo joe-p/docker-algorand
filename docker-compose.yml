@@ -1,0 +1,46 @@
+version: '3.0'
+
+services:
+  algorand-node:
+    build: 
+      context: ${PWD}/algorand-node
+      args:
+        channel: stable
+        branch: ~
+    ports:
+      - 8080:8080
+    environment:
+      TOKEN: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+      NETWORK: 'sandnet'
+
+  algorand-indexer:
+    build: 
+      context: ${PWD}/algorand-indexer
+      args:
+        version: latest
+        branch: ~
+    ports: 
+      - 8980:8980
+    environment:
+      POSTGRES_HOST: indexer-db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: algorand
+      POSTGRES_PASSWORD: algorand
+      POSTGRES_DB: indexer
+      ALGOD_HOST: algorand-node
+      ALGOD_PORT: 8080
+      ALGOD_TOKEN: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+      LOG_LEVEL: info
+    depends_on:
+      - indexer-db
+      - algorand-node
+    restart: on-failure
+
+  indexer-db:
+    image: "postgres:14.2-bullseye"
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: algorand
+      POSTGRES_PASSWORD: algorand
+      POSTGRES_DB: indexer
