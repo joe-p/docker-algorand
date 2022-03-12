@@ -12,6 +12,8 @@ RUN mkdir /algo_bin/
 ARG channel=stable
 ARG branch=
 
+ADD https://api.github.com/repos/algorand/go-algorand/branches /tmp/branches
+
 COPY install.rb .
 RUN ruby install.rb
 

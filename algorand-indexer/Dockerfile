@@ -11,6 +11,8 @@ ruby
 ARG version=''
 ARG branch='master'
 
+ADD https://api.github.com/repos/algorand/indexer/branches /tmp/branches
+
 COPY install.rb .
 RUN ruby install.rb
 
