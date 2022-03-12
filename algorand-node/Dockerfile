@@ -1,8 +1,5 @@
 FROM golang:1.17.8-bullseye as builder
 
-ARG channel=stable
-ARG branch=''
-
 RUN apt-get update 
 RUN apt-get install -y \
 wget \
@@ -11,6 +8,9 @@ git \
 ruby
 
 RUN mkdir /algo_bin/
+
+ARG channel=stable
+ARG branch=
 
 COPY install.rb .
 RUN ruby install.rb
