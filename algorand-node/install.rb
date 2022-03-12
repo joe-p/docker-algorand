@@ -11,7 +11,7 @@ if branch.empty?
   run 'chmod +x update.sh'
   run "./update.sh -i -c #{channel} -p /algo_bin/ -d /public_node -n"
 else
-  run 'git clone https://github.com/algorand/go-algorand'
+  run "git clone -b #{branch} https://github.com/algorand/go-algorand.git"
 
   Dir.chdir('go-algorand') do
     run './scripts/configure_dev.sh'
