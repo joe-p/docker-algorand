@@ -5,8 +5,7 @@ services:
     build: 
       context: ${PWD}/algorand-node
       args:
-        channel: stable
-        branch: ~
+        checkout: rel/stable
     ports:
       - 8080:8080
     environment:
@@ -17,8 +16,7 @@ services:
     build: 
       context: ${PWD}/algorand-indexer
       args:
-        version: latest
-        branch: ~
+        checkout: master
     ports: 
       - 8980:8980
     environment:

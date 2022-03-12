@@ -5,19 +5,22 @@ RUN apt-get install -y \
 wget \
 git \
 libtool \
-libboost-dev \
-ruby
+libboost-dev
 
-ARG version=''
-ARG branch='master'
+ARG checkout=master
+ARG token=
 
-ADD https://api.github.com/repos/algorand/indexer/branches /tmp/branches
+# If using a branch name, this will serve as a cache buster if there are new commits
+ADD https://$token@api.github.com/repos/algorand/indexer/commits/${checkout} /tmp/response
 
-COPY install.rb .
-RUN ruby install.rb
+RUN git clone https://github.com/algorand/indexer.git
+WORKDIR indexer
+
+RUN git checkout ${checkout}
+RUN make
 
 FROM debian:bullseye-slim as final
-COPY --from=builder /usr/bin/algorand-indexer /usr/bin/algorand-indexer
+COPY --from=builder /go/indexer/cmd/algorand-indexer/algorand-indexer /usr/local/bin/algorand-indexer
 
 ENV LOG_LEVEL=info
 
@@ -31,5 +34,9 @@ ENV ALGOD_HOST=algorand-node
 ENV ALGOD_PORT=8080
 ENV ALGOD_TOKEN='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
 
-COPY start.sh .
-CMD /bin/bash start.sh  
+CMD algorand-indexer daemon \
+    --loglevel ${LOG_LEVEL} \
+    --postgres "host=${POSTGRES_HOST} port=${POSTGRES_PORT} user=${POSTGRES_USER} password=${POSTGRES_USER} dbname=${POSTGRES_DB} sslmode=disable" \
+    --algod-net "${ALGOD_HOST}:${ALGOD_PORT}" \
+    --algod-token ${ALGOD_TOKEN} \
+    --dev-mode  
