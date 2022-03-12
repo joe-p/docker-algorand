@@ -6,7 +6,13 @@ end
 branch = ENV['branch'].to_s
 channel = ENV['channel'].to_s
 
-if branch.empty?
+if !channel.empty? and !branch.empty?
+  echo "Both channel and branch are set. Only one can be provided."
+  exit 1
+elsif channel.empty? and branch.empty?
+    echo "Neither channel nor branch are set. One must be provided."
+    exit 1
+elsif !channel.empty?
   run 'wget https://raw.githubusercontent.com/algorand/go-algorand-doc/master/downloads/installers/update.sh'
   run 'chmod +x update.sh'
   run "./update.sh -i -c #{channel} -p /algo_bin/ -d /public_node -n"

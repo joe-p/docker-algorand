@@ -8,7 +8,13 @@ end
 branch = ENV['branch'].to_s
 version = ENV['version'].to_s
 
-if branch.empty?
+if !version.empty? and !branch.empty?
+  echo "Both version and branch are set. Only one can be provided."
+  exit 1
+elsif version.empty? and branch.empty?
+  echo "Neither version nor branch are set. One must be provided."
+  exit 1
+elsif !version.empty?
   if version == 'latest'
     uri = URI('https://api.github.com/repos/algorand/indexer/releases')
     releases = JSON.parse(Net::HTTP.get(uri))
