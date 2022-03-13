@@ -1,3 +1,5 @@
+[ -f /data ] && unlink /data
+
 if [ -z "$NETWORK" ]; then
     echo "Network must be defined!"
     exit 1
@@ -9,10 +11,16 @@ else
     cp /node/genesisfiles/${NETWORK}/genesis.json /public_node
 fi
 
-echo ${TOKEN} > /data/kmd.token
 echo ${TOKEN} > /data/algod.token
 
-goal kmd start -t 0
-goal node start --listen 0.0.0.0:8080
+cd /data/kmd-*
+echo ${TOKEN} > kmd.token
+echo '{ "address": "0.0.0.0:7833", "allowed_origins":["*"] }' > kmd_config.json
 
-tail -f /data/algod-out.log
+echo "Starting node..."
+goal kmd start -t 0
+
+jq '.EnableDeveloperAPI = true | .EndpointAddress = "0.0.0.0:8080"' /public_node/config.json.example > /data/config.json
+goal node start
+
+tail -f /data/node.log

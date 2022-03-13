@@ -37,5 +37,7 @@ COPY --from=builder /algo_bin/ /usr/local/bin/
 
 ENV ALGORAND_DATA="/data"
 
+RUN apt-get update
+RUN apt-get install -y jq
 COPY start.sh .
 CMD /bin/bash start.sh
