@@ -11,16 +11,13 @@ else
     cp /node/genesisfiles/${NETWORK}/genesis.json /public_node
 fi
 
-echo ${TOKEN} > /data/algod.token
-
 cd /data/kmd-*
 echo ${TOKEN} > kmd.token
-echo '{ "address": "0.0.0.0:7833", "allowed_origins":["*"] }' > kmd_config.json
-
-echo "Starting node..."
+echo '{ "address": "0.0.0.0:4002", "allowed_origins":["*"] }' > kmd_config.json
 goal kmd start -t 0
 
-jq '.EnableDeveloperAPI = true | .EndpointAddress = "0.0.0.0:8080"' /public_node/config.json.example > /data/config.json
+echo ${TOKEN} > /data/algod.token
+jq '.EnableDeveloperAPI = true | .EndpointAddress = "0.0.0.0:4001"' /public_node/config.json.example > /data/config.json
 goal node start
 
 tail -f /data/node.log
