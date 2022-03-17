@@ -9,14 +9,14 @@ ARG token=
 # If using a branch name, this will serve as a cache buster if there are new commits
 ADD https://$token@api.github.com/repos/algorand/indexer/commits/${ref} /tmp/response
 
-RUN git clone https://github.com/algorand/indexer.git
-WORKDIR indexer
+RUN git clone https://github.com/algorand/indexer.git /usr/local/src/indexer
+WORKDIR /usr/local/src/indexer
 
 RUN git checkout ${ref}
 RUN make
 
 FROM debian:bullseye-slim as final
-COPY --from=builder /go/indexer/cmd/algorand-indexer/algorand-indexer /usr/local/bin/algorand-indexer
+COPY --from=builder /usr/local/src/indexer/cmd/algorand-indexer/algorand-indexer /usr/local/bin/algorand-indexer
 
 ENV LOG_LEVEL=info
 
