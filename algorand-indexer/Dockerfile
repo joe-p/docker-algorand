@@ -1,11 +1,7 @@
 FROM golang:1.17.8-bullseye as builder
 
 RUN apt-get update 
-RUN apt-get install -y \
-wget \
-git \
-libtool \
-libboost-dev
+RUN apt-get install -y libboost-dev libtool
 
 ARG ref=master
 ARG token=

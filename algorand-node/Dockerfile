@@ -1,12 +1,5 @@
 FROM golang:1.17.8-bullseye as builder
 
-RUN apt-get update 
-RUN apt-get install -y \
-wget \
-curl \
-git \ 
-ruby
-
 RUN mkdir /algo_bin/
 
 ARG ref=rel/stable
