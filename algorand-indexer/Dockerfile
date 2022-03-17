@@ -7,16 +7,16 @@ git \
 libtool \
 libboost-dev
 
-ARG checkout=master
+ARG ref=master
 ARG token=
 
 # If using a branch name, this will serve as a cache buster if there are new commits
-ADD https://$token@api.github.com/repos/algorand/indexer/commits/${checkout} /tmp/response
+ADD https://$token@api.github.com/repos/algorand/indexer/commits/${ref} /tmp/response
 
 RUN git clone https://github.com/algorand/indexer.git
 WORKDIR indexer
 
-RUN git checkout ${checkout}
+RUN git checkout ${ref}
 RUN make
 
 FROM debian:bullseye-slim as final

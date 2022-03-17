@@ -9,16 +9,16 @@ ruby
 
 RUN mkdir /algo_bin/
 
-ARG checkout=rel/stable
+ARG ref=rel/stable
 ARG token=
 
 # If using a branch name, this will serve as a cache buster if there are new commits
-ADD https://$token@api.github.com/repos/algorand/go-algorand/commits/${checkout} /tmp/response
+ADD https://$token@api.github.com/repos/algorand/go-algorand/commits/${ref} /tmp/response
 
 RUN git clone https://github.com/algorand/go-algorand.git
 WORKDIR go-algorand
 
-RUN git checkout ${checkout}
+RUN git checkout ${ref}
 RUN ./scripts/configure_dev.sh
 RUN ./scripts/buildtools/install_buildtools.sh
 RUN make install

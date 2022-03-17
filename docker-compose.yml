@@ -5,7 +5,7 @@ services:
     build: 
       context: ${PWD}/algorand-node
       args:
-        checkout: rel/stable
+        ref: rel/stable
     ports:
       - 4001:4001
       - 4002:4002
@@ -17,7 +17,7 @@ services:
     build: 
       context: ${PWD}/algorand-indexer
       args:
-        checkout: master
+        ref: master
     ports: 
       - 8980:8980
     environment:
