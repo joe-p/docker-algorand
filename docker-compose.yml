@@ -5,6 +5,7 @@ services:
     build: 
       context: ${PWD}/algorand-node
       args:
+        repo: algorand/go-algorand
         ref: rel/stable
     ports:
       - 4001:4001
@@ -17,6 +18,7 @@ services:
     build: 
       context: ${PWD}/algorand-indexer
       args:
+        repo: algorand/indexer
         ref: master
     ports: 
       - 8980:8980
