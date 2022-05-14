@@ -4,42 +4,18 @@
         "DevMode": true,
         "Wallets": [
             {
-                "Name": "RelayWallet",
-                "Stake": 1,
-                "Online": true
-            },
-            {
                 "Name": "Wallet1",
-                "Stake": 98,
+                "Stake": 100,
                 "Online": true
-            },
-            {
-                "Name": "Wallet2",
-                "Stake": 1,
-                "Online": false
             }
         ]
     },
     "Nodes": [
         {
-            "Name": "Relay",
-            "IsRelay": true,
-            "Wallets": [
-                {
-                    "Name": "RelayWallet",
-                    "ParticipationOnly": false
-                }
-            ]
-        },
-        {
             "Name": "Node",
             "Wallets": [
                 {
                     "Name": "Wallet1",
-                    "ParticipationOnly": false
-                },
-                {
-                    "Name": "Wallet2",
                     "ParticipationOnly": false
                 }
             ]
