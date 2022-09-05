@@ -3,7 +3,7 @@ version: '3.0'
 services:
   algorand-node:
     build: 
-      context: ${PWD}/algorand-node
+      context: ./algorand-node
       args:
         repo: algorand/go-algorand
         ref: rel/stable
@@ -16,7 +16,7 @@ services:
 
   algorand-indexer:
     build: 
-      context: ${PWD}/algorand-indexer
+      context: ./algorand-indexer
       args:
         repo: algorand/indexer
         ref: master
