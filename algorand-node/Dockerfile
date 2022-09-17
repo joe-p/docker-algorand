@@ -2,10 +2,9 @@ FROM golang:1.17.8-bullseye as builder
 
 ARG repo=algorand/go-algorand
 ARG ref=rel/stable
-ARG token=
 
 # If using a branch name, this will serve as a cache buster if there are new commits
-ADD https://$token@api.github.com/repos/${repo}/commits/${ref} /tmp/response
+ADD https://api.github.com/repos/${repo}/commits/${ref} /tmp/response
 
 RUN git clone https://github.com/${repo}.git /usr/local/src/go-algorand
 WORKDIR /usr/local/src/go-algorand
