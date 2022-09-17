@@ -23,7 +23,11 @@ RUN for binary in ./cmd/*; do \
     done
 
 COPY template.json /template.json
-RUN goal network create --network sandnet --rootdir /sandnet/ --template /template.json
+
+RUN mkdir /sandnet/
+ARG create_sandnet=false
+RUN if [ "$create_sandnet" = true ]; then goal network create --network sandnet --rootdir /sandnet/ --template /template.json; fi
+RUN rm -rf /sandnet/Node/config.json /public_node/config.json /sandnet/Node/kmd-*/kmd_config.json /public_node/kmd-*/kmd_config.json
 
 RUN rm -rf /sandnet/Node/config.json /public_node/config.json /sandnet/Node/kmd-*/kmd_config.json /public_node/kmd-*/kmd_config.json
 

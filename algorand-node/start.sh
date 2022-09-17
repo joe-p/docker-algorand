@@ -4,8 +4,13 @@ if [ -z "$NETWORK" ]; then
     echo "Network must be defined!"
     exit 1
 elif [[ "$NETWORK" == 'sandnet' ]]; then
-    ln -s /sandnet/Node/ /data
-    goal node start --datadir /sandnet/Relay --listen 0.0.0.0:8081
+    if [ -d /sandnet/Node/ ]; then
+        ln -s /sandnet/Node/ /data
+        goal node start --datadir /sandnet/Relay --listen 0.0.0.0:8081
+    else
+        echo "Sandnet was not created during docker image build process. Please rebuild image with build argument create_sandnet=true"
+        exit 1 
+    fi
 else
     ln -s /public_node/ /data
     [ -f /public_node/genesis.json ] || cp /node/genesisfiles/${NETWORK}/genesis.json /public_node
