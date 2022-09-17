@@ -8,16 +8,16 @@ elif [[ "$NETWORK" == 'sandnet' ]]; then
     goal node start --datadir /sandnet/Relay --listen 0.0.0.0:8081
 else
     ln -s /public_node/ /data
-    cp /node/genesisfiles/${NETWORK}/genesis.json /public_node
+    [ -f /public_node/genesis.json ] || cp /node/genesisfiles/${NETWORK}/genesis.json /public_node
 fi
 
 cd /data/kmd-*
 echo ${KMD_TOKEN} > kmd.token
-echo '{ "address": "0.0.0.0:4002", "allowed_origins":["*"] }' > kmd_config.json
+[ -f kmd_config.json ] || echo '{ "address": "0.0.0.0:4002", "allowed_origins":["*"] }' > kmd_config.json
 goal kmd start -t 0
 
 echo ${ALGOD_TOKEN} > /data/algod.token
-jq '.EnableDeveloperAPI = true | .EndpointAddress = "0.0.0.0:4001"' /public_node/config.json.example > /data/config.json
+[ -f /data/config.json ] || jq '.EnableDeveloperAPI = true | .EndpointAddress = "0.0.0.0:4001"' /public_node/config.json.example > /data/config.json
 goal node start
 
 tail -f /data/node.log
