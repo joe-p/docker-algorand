@@ -24,6 +24,18 @@ If you want to build from the latest commit on a branch (for example, build with
 
 ### Automatic HTTPS
 
-To enable automatic HTTP endpoints on a public domain, uncomment the `caddy` service in `docker-compose.yml` and set `DOMAIN` variable to your domain. By default it will route `algod.DOMAIN` to the algod endpoints and `indexer.DOMAIN` to the indexer endpoints. Further configuration can be done in the [Caddyfile](./Caddyfile). 
+To enable automatic HTTP endpoints on a public domain, uncomment the `caddy` service in [docker-compose.yml](docker-compose.yml) and set `DOMAIN` variable to your domain. By default it will route `algod.DOMAIN` to the algod endpoints and `indexer.DOMAIN` to the indexer endpoints. Further configuration can be done in the [Caddyfile](./Caddyfile). 
 
 **NOTE:** If you are exposing public endpoints ensure your tokens are set properly and only expose KMD if you really need to. In most cases KMD should not be publicly exposed. 
+
+### Fast Catchup
+
+[catchup.sh](./catchup.sh) can be used to perform fast catchup. The script will get the latest catchpoint for the network supplied as the argument to the script. For example, to catchup using the latest testnet catchpoint: `./catchup.sh testnet`
+
+### Persistent Storage
+
+To have a persistent data directory simply mount a directoy to `/node` for the `algorand-node` service in [docker-compose.yml](docker-compose.yml)
+
+### Updating
+
+To update the node, ensure you have a persistent volume mounted to `/node` as mentioned above. Then simply rebuild the image for whatever tag you would like to update to.
