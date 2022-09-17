@@ -1,5 +1,7 @@
 [ -f /data ] && unlink /data
 
+rsync -a /node_install/ /node/
+
 if [ -z "$NETWORK" ]; then
     echo "Network must be defined!"
     exit 1

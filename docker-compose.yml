@@ -15,6 +15,9 @@ services:
       ALGOD_TOKEN: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
       KMD_TOKEN: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
       NETWORK: 'sandnet'
+    # Uncomment for persistent storage in ./node
+    #volumes:
+    #  - ./node:/node
 
   algorand-indexer:
     build: 
