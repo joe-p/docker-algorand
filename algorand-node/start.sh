@@ -12,8 +12,8 @@ elif [[ "$NETWORK" == 'sandnet' ]]; then
         exit 1 
     fi
 else
-    ln -s /public_node/ /data
-    [ -f /public_node/genesis.json ] || cp /node/genesisfiles/${NETWORK}/genesis.json /public_node
+    ln -s /node/ /data
+    [ -f /node/genesis.json ] || cp /node/genesisfiles/${NETWORK}/genesis.json /node
 fi
 
 cd /data/kmd-*
@@ -22,7 +22,7 @@ echo ${KMD_TOKEN} > kmd.token
 goal kmd start -t 0
 
 echo ${ALGOD_TOKEN} > /data/algod.token
-[ -f /data/config.json ] || jq '.EnableDeveloperAPI = true | .EndpointAddress = "0.0.0.0:4001"' /public_node/config.json.example > /data/config.json
+[ -f /data/config.json ] || jq '.EnableDeveloperAPI = true | .EndpointAddress = "0.0.0.0:4001"' /node/config.json.example > /data/config.json
 goal node start
 
 tail -f /data/node.log

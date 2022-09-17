@@ -13,7 +13,7 @@ RUN git checkout ${ref}
 RUN ./scripts/configure_dev.sh
 RUN ./scripts/buildtools/install_buildtools.sh
 RUN make install
-RUN mv ~/.algorand /public_node
+RUN mv ~/.algorand /node
 
 # Get binary names from ./cmd and copy binary from /go/bin/ if they exist
 RUN for binary in ./cmd/*; do \
@@ -27,12 +27,12 @@ COPY template.json /template.json
 RUN mkdir /sandnet/
 ARG create_sandnet=false
 RUN if [ "$create_sandnet" = true ]; then goal network create --network sandnet --rootdir /sandnet/ --template /template.json; fi
-RUN rm -rf /sandnet/Node/config.json /public_node/config.json /sandnet/Node/kmd-*/kmd_config.json /public_node/kmd-*/kmd_config.json
+RUN rm -rf /sandnet/Node/config.json /node/config.json /sandnet/Node/kmd-*/kmd_config.json /node/kmd-*/kmd_config.json
 
-RUN rm -rf /sandnet/Node/config.json /public_node/config.json /sandnet/Node/kmd-*/kmd_config.json /public_node/kmd-*/kmd_config.json
+RUN rm -rf /sandnet/Node/config.json /node/config.json /sandnet/Node/kmd-*/kmd_config.json /node/kmd-*/kmd_config.json
 
 FROM debian:bullseye-slim as final
-COPY --from=builder /public_node/ /public_node/
+COPY --from=builder /node/ /node/
 COPY --from=builder /sandnet/ /sandnet/
 COPY --from=builder /usr/local/bin/ /usr/local/bin/
 
