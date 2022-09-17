@@ -27,7 +27,6 @@ COPY template.json /template.json
 RUN mkdir /sandnet/
 ARG create_sandnet=false
 RUN if [ "$create_sandnet" = true ]; then goal network create --network sandnet --rootdir /sandnet/ --template /template.json; fi
-RUN rm -rf /sandnet/Node/config.json /node/config.json /sandnet/Node/kmd-*/kmd_config.json /node/kmd-*/kmd_config.json
 
 RUN rm -rf /sandnet/Node/config.json /node/config.json /sandnet/Node/kmd-*/kmd_config.json /node/kmd-*/kmd_config.json
 
