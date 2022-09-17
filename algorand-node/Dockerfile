@@ -25,6 +25,8 @@ RUN for binary in ./cmd/*; do \
 COPY template.json /template.json
 RUN goal network create --network sandnet --rootdir /sandnet/ --template /template.json
 
+RUN rm -rf /sandnet/Node/config.json /public_node/config.json /sandnet/Node/kmd-*/kmd_config.json /public_node/kmd-*/kmd_config.json
+
 FROM debian:bullseye-slim as final
 COPY --from=builder /public_node/ /public_node/
 COPY --from=builder /sandnet/ /sandnet/
