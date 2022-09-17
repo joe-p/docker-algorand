@@ -47,3 +47,14 @@ services:
       POSTGRES_USER: algorand
       POSTGRES_PASSWORD: algorand
       POSTGRES_DB: indexer
+
+  # Uncomment to enable automatic https on DOMAIN
+  #caddy:
+  #  image: caddy:2-alpine
+  #  ports:
+  #    - 80:80
+  #    - 443:443
+  #  environment:
+  #    DOMAIN: example.com
+  #  volumes:
+  #    - ./Caddyfile:/etc/caddy/Caddyfile

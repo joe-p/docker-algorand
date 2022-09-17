@@ -1,26 +1,4 @@
-# Algorand Sandbox v2
-
-## Improvements 
-
-### docker-compose Configuration
-
-All configuration is done via `docker-compose.yml`. This makes sandbox configuration simple while also allowing it to be very extensible. Users familiar with Docker and docker-compose will be able to pick up sandbox configuration very quickly.
-
-### Simplified Build/Start
-
-The build and start process for the images are much simpler compared to the original sandbox repo. All of the build process is done within the respective Dockerfiles (no external scripts). `algorand-node` leverages `algorand-node/start.sh` as a start script, but it is relatively short and not too complex. 
-
-### GitHub/Docker Hub CI/CD Potential
-
-The only build arg for determine the target version is the Git ref (branch, tag, or commit) to checkout before building. This means it would be very easy to plug these images into a CI/CD process and have public Docker images built upon every release/update. 
-
-### Smaller Images
-
-Thanks to multi-stage builds and debian-slim images, the final images are relatively small in size. 
-
-### Build Caching/Cache Busting
-
-When building the images, Docker will leverage its cache provided there are no new changes. This is true even when you are building off a specific branch. For example, if you are building from `master` and there are new commits since the last image build, the image will be rebuilt with the new commits. Otherwise, docker will leverage the previously cached build to provide a very quick build process.
+# Algorand Docker
 
 ## How To Use
 
@@ -42,4 +20,10 @@ To change versions for indexer or the node, simply modify the ref build arg for 
 
 You must run `docker-compose build` after making any changes to the build args. 
 
-If you want to build from the latest commit on a branch (for example, build with new changes to `master` or `rel/stable`). You must run `docker-compose build`. If there are new commits, the image will be built with them included. If there aren't any new changes, the image will be built from the previously cached build. 
+If you want to build from the latest commit on a branch (for example, build with new changes to `master` or `rel/stable`). You must run `docker-compose build`. If there are new commits, the image will be built with them included. If there aren't any new changes, the image will be built from the previously cached build.
+
+### Automatic HTTPS
+
+To enable automatic HTTP endpoints on a public domain, uncomment the `caddy` service in `docker-compose.yml` and set `DOMAIN` variable to your domain. By default it will route `algod.DOMAIN` to the algod endpoints and `indexer.DOMAIN` to the indexer endpoints. Further configuration can be done in the [Caddyfile](./Caddyfile). 
+
+**NOTE:** If you are exposing public endpoints ensure your tokens are set properly and only expose KMD if you really need to. In most cases KMD should not be publicly exposed. 
