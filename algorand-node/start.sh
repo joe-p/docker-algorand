@@ -12,11 +12,11 @@ else
 fi
 
 cd /data/kmd-*
-echo ${TOKEN} > kmd.token
+echo ${KMD_TOKEN} > kmd.token
 echo '{ "address": "0.0.0.0:4002", "allowed_origins":["*"] }' > kmd_config.json
 goal kmd start -t 0
 
-echo ${TOKEN} > /data/algod.token
+echo ${ALGOD_TOKEN} > /data/algod.token
 jq '.EnableDeveloperAPI = true | .EndpointAddress = "0.0.0.0:4001"' /public_node/config.json.example > /data/config.json
 goal node start
 
