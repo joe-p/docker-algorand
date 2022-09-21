@@ -14,6 +14,10 @@ To change networks, simply change the NETWORK environment variable for `algorand
 
 By default, it is `sandnet`, which is a private network with developer mode enabled (instant blocks). The exposed node contains one wallet with most of the circulation that you can use to fund newly created accounts. 
 
+#### Public Networks
+
+For public netwoks it is recommended you uncomment the mounted volume. Having a mounted volume means data is preserved when updating (building new image). Also be sure to set the `create_sandnet` build arg to `false` if you know you won't be using sandnet. 
+
 ### Changing Versions
 
 To change versions for indexer or the node, simply modify the ref build arg for the image to the desired Git ref (commit, branch, or tag) you want to checkout before building. By default, `algorand-node` will checkout `rel/stable` to get the latest stable release and `algorand-indexer` will checkout `master` to get the latest release. 
