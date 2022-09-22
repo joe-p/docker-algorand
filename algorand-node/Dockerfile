@@ -27,7 +27,11 @@ COPY template.json /template.json
 
 RUN mkdir /sandnet/
 ARG create_sandnet=false
-RUN if [ "$create_sandnet" = true ]; then goal network create --network sandnet --rootdir /sandnet/ --template /template.json; fi
+ARG dev_mode=true
+
+RUN apt-get update && apt-get install -y jq moreutils
+RUN if [ "$dev_mode" == false ] && [ "$create_sandnet" == true ]; then jq '.Genesis.DevMode = false' /data/config.json | sponge /data/config.json; fi
+RUN if [ "$create_sandnet" == true ]; then goal network create --network sandnet --rootdir /sandnet/ --template /template.json; fi
 
 RUN rm -rf /sandnet/Node/config.json /node_install/config.json /sandnet/Node/kmd-*/kmd_config.json /node_install/kmd-*/kmd_config.json /node_install/genesis.json /node_install/mainnet*
 
