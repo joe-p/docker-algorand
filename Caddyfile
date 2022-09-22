@@ -5,8 +5,3 @@ indexer.{$DOMAIN} {
 algod.{$DOMAIN} {
     reverse_proxy algorand-node:4001
 }
-
-#kmd.{$DOMAIN} {
-#    reverse_proxy algorand-node:4002
-#}
-
