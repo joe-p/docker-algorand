@@ -18,6 +18,16 @@ RUN make
 FROM debian:bullseye-slim as final
 COPY --from=builder /usr/local/src/indexer/cmd/algorand-indexer/algorand-indexer /usr/local/bin/algorand-indexer
 
+ENV POSTGRES_HOST=indexer-db
+ENV POSTGRES_PORT=5432
+ENV POSTGRES_USER=algorand
+ENV POSTGRES_PASSWORD=algorand
+ENV POSTGRES_DB=indexer
+ENV ALGOD_HOST=algorand-node
+ENV ALGOD_PORT=4001
+ENV ALGOD_TOKEN='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+ENV LOG_LEVEL=info
+
 CMD algorand-indexer daemon \
     --loglevel ${LOG_LEVEL} \
     --postgres "host=${POSTGRES_HOST} port=${POSTGRES_PORT} user=${POSTGRES_USER} password=${POSTGRES_USER} dbname=${POSTGRES_DB} sslmode=disable" \

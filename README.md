@@ -12,17 +12,21 @@ To build the docker images and start the network, simply run `docker compose up`
 
 An example configuration for running a mainnet node can be seen in [mainnet-node.yml](./mainnet-node.yml). The key here is there will be a mounted volumed located at `./node` that keeps persistent data storage across updates and rebuilds. 
 
-### Fast Catchup
+## Configuration
+
+See [CONFIGURATION.md](./CONFIGURATION.md) for configuration details
+
+## Fast Catchup
 
 [catchup.sh](./catchup.sh) is a convenience script to easily perform fast catchup on a node. The script only takes one required argument, which must be `mainnet` or `testnet`. For example, to catchup on mainnet: `./catchup.sh mainnet`.
 
-# Updating
+## Updating
 
 To update the software, simply run `docker compose build` to get the latest version of the configured git ref and restart the containers with `docker compose restart`. By default, for algod/kmd this will be the latest `rel/stable` release and for indexer it will be the latest `master` commit.
 
-# Public APIs with HTTPS
+## Public APIs with HTTPS
 
-[public-node.yml](./public-node.yml) is an example of a mainnet node configured with automatic HTTPS
+[public-indexer.yml](./public-indexer.yml) is an example of a mainnet node and indexer configured with automatic HTTPS
 
 You can configure Caddy to automatically provide HTTPS endpoints for the algod and indexer HTTP APIs. Simply update your domain name under the `caddy` service in `docker-compose.yml`. By default, it will route `algod.$DOMAIN` to the algod HTTP API and `indexer.$DOMAIN` to the indexer HTTP endpoint. A different reverse proxy configuration can be done by changing the [Caddyfile](./Caddyfile). See the [Caddy documentation](https://caddyserver.com/docs/caddyfile) for more information.
 
@@ -35,13 +39,18 @@ If you expose the endpoints publicly via Caddy, it is strongly recommended to ch
     expose:
         - 4001
         - 4002
+...
+    #ports:
+    #    - 8980:8980
+    expose: 
+      - 8980
 ```
 
 ***NOTE:** BE SURE TO UPDATE TOKENS IF API IS PUBLIC
 
 # Sandbox Comparison
 
- Below is a comparison of the codebase in this repo and sandbox
+ Below is a comparison of the codebase in this repo and sandbox via [scc](https://github.com/boyter/scc)
 
 ## Sandbox
 ```
@@ -68,13 +77,13 @@ Total                       31      5680      418       162     5100        181
 ───────────────────────────────────────────────────────────────────────────────
 Language                 Files     Lines   Blanks  Comments     Code Complexity
 ───────────────────────────────────────────────────────────────────────────────
-YAML                         3       117        7        17       93          0
-Dockerfile                   2        82       21         3       58          3
-Shell                        2        32        5         1       26          7
+YAML                         3       158        9        17      132          0
+Dockerfile                   2        91       21         3       67          9
+Markdown                     2       131       31         0      100          0
+Shell                        2        39        8         1       30          7
 JSON                         1        24        0         0       24          0
-Markdown                     1        80       20         0       60          0
 gitignore                    1         1        0         0        1          0
 ───────────────────────────────────────────────────────────────────────────────
-Total                       10       336       53        21      262         10
+Total                       11       444       69        21      354         16
 ───────────────────────────────────────────────────────────────────────────────
 ```
