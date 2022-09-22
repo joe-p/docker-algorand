@@ -16,11 +16,11 @@ services:
       # BE SURE TO CHANGE TOKENS IF API IS PUBLIC
       ALGOD_TOKEN: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
       KMD_TOKEN: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-      ENABLE_DEVELOPER_API: false
+      ENABLE_DEVELOPER_API: true
       ARCHIVAL: false
       NETWORK: 'mainnet'
     volumes:
-      - ./node:/node
+      - ./volumes/node:/node
     restart: unless-stopped
   
   caddy:

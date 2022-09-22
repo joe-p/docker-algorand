@@ -1,3 +1,4 @@
+# Example configuration of a public mainnet node with HTTPS
 version: '3.0'
 
 services:
@@ -7,19 +8,20 @@ services:
       args:
         repo: algorand/go-algorand
         ref: rel/stable
-        create_sandnet: true
-    ports:
-      - 4001:4001
-      - 4002:4002
+        create_sandnet: false
+    expose:
+      - 4001
+      - 4002
     environment:
+      # BE SURE TO CHANGE TOKENS IF API IS PUBLIC
       ALGOD_TOKEN: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
       KMD_TOKEN: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
       ENABLE_DEVELOPER_API: true
       ARCHIVAL: true
-      NETWORK: 'sandnet' # If you are changing to a public network ensure to set a bind-mount for /node below
-    # Uncomment for persistent storage in ./node
-    #volumes:
-    #  - ./volumes/node:/node
+      NETWORK: 'mainnet'
+    volumes:
+      - ./volumes/node:/node
+    restart: unless-stopped
 
   algorand-indexer:
     build: 
@@ -27,8 +29,8 @@ services:
       args:
         repo: algorand/indexer
         ref: master
-    ports: 
-      - 8980:8980
+    expose: 
+      - 8980
     environment:
       POSTGRES_HOST: indexer-db
       POSTGRES_PORT: 5432
@@ -43,6 +45,8 @@ services:
       - indexer-db
       - algorand-node
     restart: on-failure
+    volumes:
+      - ./volumes/indexer:/data
 
   indexer-db:
     image: "postgres:14.2-bullseye"
@@ -51,15 +55,14 @@ services:
     environment:
       POSTGRES_USER: algorand
       POSTGRES_PASSWORD: algorand
-      POSTGRES_DB: indexer
+      POSTGRES_DB: indexer  
 
-  # Uncomment to enable automatic https on DOMAIN
-  #caddy:
-  #  image: caddy:2-alpine
-  #  ports:
-  #    - 80:80
-  #    - 443:443
-  #  environment:
-  #    DOMAIN: example.com
-  #  volumes:
-  #    - ./Caddyfile:/etc/caddy/Caddyfile
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      DOMAIN: example.com
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile

@@ -20,5 +20,5 @@ services:
       ARCHIVAL: false
       NETWORK: 'mainnet'
     volumes:
-      - ./node:/node
+      - ./volumes/node:/node
     restart: unless-stopped
