@@ -1,45 +1,80 @@
-# Algorand Docker
+This repository contains docker images and a docker-compose file for easily spinning up an Algorand node and/or indexer. This is an alternative to the official Algorand [sandbox](https://github.com/algorand/sandbox). The main goal is to make node setup as simple as possible for both private and public networks.
 
-## How To Use
+# Usage
 
-To get started, all you need is a system with Docker and docker compose installed. If you have those two installed, you can clone this repo and then run `docker compose build` to build the containers followed by `docker compose up` to start them. 
+## Local Development Network
 
-### Changing Networks
+The default [docker-compose.yml](./docker-compose.yml) is configured for setting up a local network with development mode enabled.
 
-To change networks, simply change the NETWORK environment variable for `algorand-node` to `sandnet`, `testnet`, `betanet`, or `devnet`.
+To build the docker images and start the network, simply run `docker compose up`
 
-```yml
-      NETWORK: 'sandnet'
-```
+## Public Network Nodes
 
-By default, it is `sandnet`, which is a private network with developer mode enabled (instant blocks). The exposed node contains one wallet with most of the circulation that you can use to fund newly created accounts. 
-
-#### Public Networks
-
-For public netwoks it is recommended you uncomment the mounted volume. Having a mounted volume means data is preserved when updating (building new image). Also be sure to set the `create_sandnet` build arg to `false` if you know you won't be using sandnet. 
-
-### Changing Versions
-
-To change versions for indexer or the node, simply modify the ref build arg for the image to the desired Git ref (commit, branch, or tag) you want to checkout before building. By default, `algorand-node` will checkout `rel/stable` to get the latest stable release and `algorand-indexer` will checkout `master` to get the latest release. 
-
-You must run `docker compose build` after making any changes to the build args. 
-
-If you want to build from the latest commit on a branch (for example, build with new changes to `master` or `rel/stable`). You must run `docker compose build`. If there are new commits, the image will be built with them included. If there aren't any new changes, the image will be built from the previously cached build.
-
-### Automatic HTTPS
-
-To enable automatic HTTP endpoints on a public domain, uncomment the `caddy` service in [docker compose.yml](docker compose.yml) and set `DOMAIN` variable to your domain. By default it will route `algod.DOMAIN` to the algod endpoints and `indexer.DOMAIN` to the indexer endpoints. Further configuration can be done in the [Caddyfile](./Caddyfile). 
-
-**NOTE:** If you are exposing public endpoints ensure your tokens are set properly and only expose KMD if you really need to. In most cases KMD should not be publicly exposed. 
+An example configuration for running a mainnet node can be seen in [mainnet-node.yml](./mainnet-node.yml). The key here is there will be a mounted volumed located at `./node` that keeps persistent data storage across updates and rebuilds. 
 
 ### Fast Catchup
 
-[catchup.sh](./catchup.sh) can be used to perform fast catchup. The script will get the latest catchpoint for the network supplied as the argument to the script. For example, to catchup using the latest testnet catchpoint: `./catchup.sh testnet`
+[catchup.sh](./catchup.sh) is a convenience script to easily perform fast catchup on a node. The script only takes one required argument, which must be `mainnet` or `testnet`. For example, to catchup on mainnet: `./catchup.sh mainnet`.
 
-### Persistent Storage
+# Updating
 
-To have a persistent data directory simply mount a directoy to `/node` for the `algorand-node` service in [docker compose.yml](docker compose.yml)
+To update the software, simply run `docker compose build` to get the latest version of the configured git ref and restart the containers with `docker compose restart`. By default, for algod/kmd this will be the latest `rel/stable` release and for indexer it will be the latest `master` commit.
 
-### Updating
+# Public APIs with HTTPS
 
-To update the node, ensure you have a persistent volume mounted to `/node` as mentioned above. Then simply rebuild the image for whatever tag you would like to update to.
+[public-node.yml](./public-node.yml) is an example of a mainnet node configured with automatic HTTPS
+
+You can configure Caddy to automatically provide HTTPS endpoints for the algod and indexer HTTP APIs. Simply update your domain name under the `caddy` service in `docker-compose.yml`. By default, it will route `algod.$DOMAIN` to the algod HTTP API and `indexer.$DOMAIN` to the indexer HTTP endpoint. A different reverse proxy configuration can be done by changing the [Caddyfile](./Caddyfile). See the [Caddy documentation](https://caddyserver.com/docs/caddyfile) for more information.
+
+If you expose the endpoints publicly via Caddy, it is strongly recommended to change the `ports` to `expose` in `docker-compose.yml`. This will ensure that the API can only be accessed via HTTPS. For example:
+
+```yml
+    #ports:
+    #  - 4001:4001
+    #  - 4002:4002
+    expose:
+        - 4001
+        - 4002
+```
+
+***NOTE:** BE SURE TO UPDATE TOKENS IF API IS PUBLIC
+
+# Sandbox Comparison
+
+ Below is a comparison of the codebase in this repo and sandbox
+
+## Sandbox
+```
+───────────────────────────────────────────────────────────────────────────────
+Language                 Files     Lines   Blanks  Comments     Code Complexity
+───────────────────────────────────────────────────────────────────────────────
+JSON                        10      2958        0         0     2958          0
+Shell                        6      1125      171        77      877        119
+Markdown                     4       397      122         0      275          0
+Dockerfile                   3       117       25        12       80          6
+Go                           2        78       18         2       58          7
+YAML                         2       116        6         2      108          0
+BASH                         1       717       68        57      592         42
+Docker ignore                1         5        0         0        5          0
+Python                       1       160        7        11      142          7
+gitignore                    1         7        1         1        5          0
+───────────────────────────────────────────────────────────────────────────────
+Total                       31      5680      418       162     5100        181
+───────────────────────────────────────────────────────────────────────────────
+```
+
+## This Repo
+```
+───────────────────────────────────────────────────────────────────────────────
+Language                 Files     Lines   Blanks  Comments     Code Complexity
+───────────────────────────────────────────────────────────────────────────────
+YAML                         3       117        7        17       93          0
+Dockerfile                   2        82       21         3       58          3
+Shell                        2        32        5         1       26          7
+JSON                         1        24        0         0       24          0
+Markdown                     1        80       20         0       60          0
+gitignore                    1         1        0         0        1          0
+───────────────────────────────────────────────────────────────────────────────
+Total                       10       336       53        21      262         10
+───────────────────────────────────────────────────────────────────────────────
+```
