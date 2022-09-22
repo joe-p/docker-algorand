@@ -39,6 +39,6 @@ COPY --from=builder /usr/local/bin/ /usr/local/bin/
 ENV ALGORAND_DATA="/data"
 
 RUN apt-get update
-RUN apt-get install -y jq rsync
+RUN apt-get install -y jq rsync moreutils
 COPY start.sh .
 CMD /bin/bash start.sh

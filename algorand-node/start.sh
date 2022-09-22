@@ -24,7 +24,14 @@ echo ${KMD_TOKEN} > kmd.token
 goal kmd start -t 0
 
 echo ${ALGOD_TOKEN} > /data/algod.token
-[ -f /data/config.json ] || jq '.EnableDeveloperAPI = true | .EndpointAddress = "0.0.0.0:4001"' /node/config.json.example > /data/config.json
+[ -f /data/config.json ] || cp /node/config.json.example /data/config.json
+
+jq '.EndpointAddress = "0.0.0.0:4001"' /data/config.json | sponge /data/config.json
+jq '.IsIndexerActive = true' /data/config.json | sponge /data/config.json
+
+jq ".EnableDeveloperAPI = ${ENABLE_DEVELOPER_API}" /data/config.json | sponge /data/config.json
+jq ".Archival = ${ARCHIVAL}" /data/config.json | sponge /data/config.json
+
 goal node start
 
 tail -f /data/node.log
