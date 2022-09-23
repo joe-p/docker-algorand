@@ -7,8 +7,8 @@ services:
       args:
         repo: algorand/go-algorand
         ref: rel/stable
-        create_sandnet: true
-        dev_mode: true
+        create_sandnet: 'true'
+        dev_mode: 'true'
     ports:
       - 4001:4001
       - 4002:4002
