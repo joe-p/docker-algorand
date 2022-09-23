@@ -15,8 +15,8 @@ services:
     environment:
       ALGOD_TOKEN: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
       KMD_TOKEN: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-      ENABLE_DEVELOPER_API: true
-      ARCHIVAL: true
+      ENABLE_DEVELOPER_API: 'true'
+      ARCHIVAL: 'true'
       NETWORK: 'sandnet' # If you are changing to a public network ensure to set a bind-mount for /node below
     # Uncomment for persistent storage in ./node
     #volumes:
