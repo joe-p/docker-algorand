@@ -6,13 +6,17 @@ RUN apt-get install -y libboost-dev libtool
 ARG repo=algorand/indexer
 ARG ref=master
 
-# If using a branch name, this will serve as a cache buster if there are new commits
-ADD https://api.github.com/repos/${repo}/commits/${ref} /tmp/response
+ADD https://github.com/${repo}/archive/${ref}.tar.gz /tmp/tarball.tar.gz
+RUN tar -xzvf /tmp/tarball.tar.gz -C /usr/local/src/
+RUN mv /usr/local/src/indexer* /usr/local/src/indexer
 
-RUN git clone https://github.com/${repo}.git /usr/local/src/indexer
 WORKDIR /usr/local/src/indexer
 
-RUN git checkout ${ref}
+# Build process relies on submodules, so we need to setup git
+RUN git init
+RUN git remote add origin https://github.com/${repo}
+RUN git fetch origin ${ref}
+RUN git reset --hard origin/${ref}
 RUN make
 
 FROM debian:bullseye-slim as final

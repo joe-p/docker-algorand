@@ -3,13 +3,12 @@ FROM golang:1.17.8-bullseye as builder
 ARG repo=algorand/go-algorand
 ARG ref=rel/stable
 
-# If using a branch name, this will serve as a cache buster if there are new commits
-ADD https://api.github.com/repos/${repo}/commits/${ref} /tmp/response
+ADD https://github.com/${repo}/archive/${ref}.tar.gz /tmp/tarball.tar.gz
+RUN tar -xzvf /tmp/tarball.tar.gz -C /usr/local/src/
+RUN mv /usr/local/src/go-algorand* /usr/local/src/go-algorand
 
-RUN git clone https://github.com/${repo}.git /usr/local/src/go-algorand
 WORKDIR /usr/local/src/go-algorand
 
-RUN git checkout ${ref}
 RUN ./scripts/configure_dev.sh
 RUN ./scripts/buildtools/install_buildtools.sh
 RUN make install
