@@ -34,9 +34,11 @@ COPY template.json /template.json
 RUN mkdir /sandnet/
 ARG create_sandnet=false
 ARG dev_mode=true
+ARG future_protocol=false
 
 RUN apt-get update && apt-get install -y jq moreutils
 RUN if [ "$dev_mode" = false ] && [ "$create_sandnet" = true ]; then jq '.Genesis.DevMode = false'  /template.json | sponge /template.json; fi
+RUN if [ "$future_protocol" = true ] && [ "$create_sandnet" = true ]; then jq '.Genesis.ConsensusProtocol = "future"'  /template.json | sponge /template.json; fi
 RUN if [ "$create_sandnet" = true ]; then goal network create --network sandnet --rootdir /sandnet/ --template /template.json; fi
 
 RUN rm -rf /sandnet/Node/config.json /node_install/config.json /sandnet/Node/kmd-*/kmd_config.json /node_install/kmd-*/kmd_config.json /node_install/genesis.json /node_install/mainnet*
