@@ -9,6 +9,13 @@ RUN mv /usr/local/src/go-algorand* /usr/local/src/go-algorand
 
 WORKDIR /usr/local/src/go-algorand
 
+# init git so we can get commit/branch in --version
+RUN git init
+RUN git checkout -b ${ref}
+RUN git remote add origin https://github.com/${repo}
+RUN git fetch origin ${ref}
+RUN git reset --hard origin/${ref}
+
 RUN ./scripts/configure_dev.sh
 RUN ./scripts/buildtools/install_buildtools.sh
 RUN make install

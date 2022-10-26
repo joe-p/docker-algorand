@@ -14,6 +14,7 @@ WORKDIR /usr/local/src/indexer
 
 # Build process relies on submodules, so we need to setup git
 RUN git init
+RUN git checkout -b ${ref}
 RUN git remote add origin https://github.com/${repo}
 RUN git fetch origin ${ref}
 RUN git reset --hard origin/${ref}
