@@ -28,7 +28,7 @@ services:
       context: ./algorand-indexer
       args:
         repo: algorand/indexer
-        ref: master
+        ref: main
     ports: 
       - 8980:8980
     environment:

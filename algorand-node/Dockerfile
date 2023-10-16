@@ -1,4 +1,4 @@
-FROM golang:1.17.8-bullseye as builder
+FROM golang:1.20-bullseye as builder
 
 ARG repo=algorand/go-algorand
 ARG ref=rel/stable
