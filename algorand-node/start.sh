@@ -24,7 +24,6 @@ echo ${ALGOD_TOKEN} > /data/algod.token
 [ -f /data/config.json ] || cp /node/config.json.example /data/config.json
 
 jq '.EndpointAddress = "0.0.0.0:4001"' /data/config.json | sponge /data/config.json
-jq '.IsIndexerActive = true' /data/config.json | sponge /data/config.json
 
 jq ".EnableDeveloperAPI = ${ENABLE_DEVELOPER_API}" /data/config.json | sponge /data/config.json
 jq ".Archival = ${ARCHIVAL}" /data/config.json | sponge /data/config.json
