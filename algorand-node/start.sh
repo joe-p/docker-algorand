@@ -8,7 +8,9 @@ if [ -z "$NETWORK" ]; then
 elif [[ "$NETWORK" == 'sandnet' ]]; then
     if [ -d /sandnet/Node/ ]; then
         ln -s /sandnet/Node/ /data
-        goal node start --datadir /sandnet/Relay --listen 0.0.0.0:8081
+        echo ${ALGOD_TOKEN} > /sandnet/Follower/algod.token
+
+        goal node start --datadir /sandnet/Follower
     else
         echo "Sandnet was not created during docker image build process. Please rebuild image with build argument create_sandnet=true"
         exit 1 
@@ -17,11 +19,6 @@ else
     ln -s /node/ /data
     [ -f /node/genesis.json ] || cp /node/genesisfiles/${NETWORK}/genesis.json /node
 fi
-
-cd /data/kmd-*
-echo ${KMD_TOKEN} > kmd.token
-[ -f kmd_config.json ] || echo '{ "address": "0.0.0.0:4002", "allowed_origins":["*"] }' > kmd_config.json
-goal kmd start -t 0
 
 echo ${ALGOD_TOKEN} > /data/algod.token
 [ -f /data/config.json ] || cp /node/config.json.example /data/config.json
@@ -33,5 +30,10 @@ jq ".EnableDeveloperAPI = ${ENABLE_DEVELOPER_API}" /data/config.json | sponge /d
 jq ".Archival = ${ARCHIVAL}" /data/config.json | sponge /data/config.json
 
 goal node start
+
+cd /data/kmd-*
+echo ${KMD_TOKEN} > kmd.token
+[ -f kmd_config.json ] || echo '{ "address": "0.0.0.0:4002", "allowed_origins":["*"] }' > kmd_config.json
+goal kmd start -t 0
 
 tail -f /data/node.log
